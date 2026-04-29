@@ -1,95 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    home: MainNavigationScreen(),
-    debugShowCheckedModeBanner: false,
-  );
-  }
-
-class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
-
-  @override
-  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
+  runApp(const MaterialApp(home: MyImageSlider())
 }
 
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _selectedIndex = 0;
+class MyImageSlider extends StatefulWidget {
+  const MyImageSlider({super.key});
 
-  final List<Widget> _pages = [
-    const Center(child: Text('Home Page', style: TextStyle(fontSize: 24))),
-    const Center(child: Text('Search Page', style: TextStyle(fontSize: 24))),
+  @override
+  State<MyImageSlider> createState() => _MyImageSliderState();
+}
+
+class _MyImageSliderState extends State<MyImageSlider> {
+  final List<String> imgList = [
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800',
+    'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800',
+    'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800',
+    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800',
+    'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=800',
+    'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800',
+    'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800',
   ]
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scafold(
-      appBar: AppBar(
-        title: const Text("Multi-Nav App"),
-        backgroundColor: Colors.blueAccent,
-      ),
+      appBar: AppBar(title: const Text("7 Image Slider")),
+      body: Column(
+        children: [
+           SizedBox(height: 50),
 
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blueAccent),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(radius: 30, backgroundColor: Colors.white, child: Icon(Icons.person)),
-                  SizedBox(height: 10),
-                  Text("User Name", style: TextStyle(color: Colors.white, fontSize: 18)),
-                  Text("user@example.com", style: TextStyle(color: Colors.white70)),
-                ],
+          CarouselSlider(
+            options: CarouselOptions(
+              height: 250.0,
+              autoPlay: true, 
+              enlargeCenterPage: true,
+              aspectRatio: 16 / 9,
+              autoPlayCurve: Curves.fastOutSlowIn,
+              enableInfiniteScroll: true,
+              autoPlayAnimationDuration: const Duration(milliseconds: 800),
+              viewportFraction: 0.8,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+            ),
+            items: imgList.map((item) => Container(
+              margin: const EdgeInsets.all(5.0),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                child: Image.network(
+                  item,
+                  fit: BoxFit.cover,
+                  width: 1000,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                ),
               ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              selected: _selectedIndex == 0,
-              onTap: () {
-                _onItemTapped(0);
-                Navigator.popp(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.search),
-              title: const Text('Search'),
-              selected: _selectedIndex == 1,
-              onTap: () {
-                _onItemTapped(1);
-                Navigator.pop(context)
-              },
-            ),
-          ],
-        ),
-      ),
-
-      boddy: _pages[_selectedIndex],
-
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            )).toList(),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search)
-            label: 'Search',
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: imgList.asMap().entries.map((entry) {
+              return Container(
+                width: 20.0,
+                height: 80.0,
+                margin: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 4.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black.withOpacity(
+                      _currentIndex = entry.key ? 0.9 : 0.4
+                  ),
+                ),
+              );
+            }).toList(),
           ),
         ],
       ),
@@ -97,4 +88,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 }
 
+class NewWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+  }
 }
